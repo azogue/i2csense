@@ -24,7 +24,7 @@ intervals.
 from math import log10
 
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 DEFAULT_I2C_BUS = 1
 DEFAULT_DELAY_SEC = 5

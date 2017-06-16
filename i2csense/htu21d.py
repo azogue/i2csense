@@ -8,7 +8,7 @@ from time import sleep
 from i2csense import I2cBaseClass
 
 
-I2C_ADDRESS = 0x40
+I2C_ADDRESS = '0x40'
 
 # Byte codes from the data sheet
 CMD_READ_TEMP_HOLD = 0xE3

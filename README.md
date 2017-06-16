@@ -104,6 +104,7 @@ i2csense -d 10 --bus 0 --address 0x77 --sensor bme280 --params osrs_t=4 osrs_p=4
 ## Changelog
 
   - **v0.0.1**: First release with 3 sensors: **BME280, BH1750, HTU21D**.
+  - **v0.0.2**: Minor fixes.
 
 ## TODO:
 

@@ -143,4 +143,4 @@ class BH1750(I2cBaseClass):
     @property
     def light_level(self):
         """Return light level in lux."""
-        raise self._light_level
+        return self._light_level
