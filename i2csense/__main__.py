@@ -59,10 +59,8 @@ def _cli_argument_parser():
 
 def main_cli():
     """CLI minimal interface."""
-    args = _cli_argument_parser()
-    print("Welcome to i2csense\n", args)
-
     # Get params
+    args = _cli_argument_parser()
     delta_secs = args.delay
     i2cbus = args.bus
     i2c_address = args.address
@@ -79,7 +77,6 @@ def main_cli():
             return {key.strip(): value}
 
         [params.update(_parse_param(sp)) for sp in sensor_params]
-    # print('DEBUG PARAMS:\n', params)
 
     if sensor_key:
         from time import sleep
@@ -127,7 +124,7 @@ def main_cli():
             output = check_output(cmd.split())
             print("Running i2cdetect utility in i2c bus {}:\n"
                   "The command '{}' has returned:\n{}"
-                  .format(i2cbus, cmd, output))
+                  .format(i2cbus, cmd, output.decode()))
         except FileNotFoundError:
             print("Please install i2cdetect before.")
             sys.exit(-1)

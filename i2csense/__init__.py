@@ -30,6 +30,13 @@ DEFAULT_I2C_BUS = 1
 DEFAULT_DELAY_SEC = 5
 
 
+class I2cVariableNotImplemented(Exception):
+    """Sensor variable is not present in this instance."""
+
+    def __init__(self, *args, **kwargs):  # real signature unknown
+        pass
+
+
 class I2cBaseClass(object):
     """Base class for sensors working in i2C bus."""
 
@@ -57,22 +64,22 @@ class I2cBaseClass(object):
     @property
     def temperature(self):
         """Return temperature in celsius."""
-        raise NotImplemented
+        raise I2cVariableNotImplemented
 
     @property
     def humidity(self):
         """Return relative humidity in percentage."""
-        raise NotImplemented
+        raise I2cVariableNotImplemented
 
     @property
     def pressure(self):
         """Return pressure in hPa."""
-        raise NotImplemented
+        raise I2cVariableNotImplemented
 
     @property
     def light_level(self):
         """Return light level in lux."""
-        raise NotImplemented
+        raise I2cVariableNotImplemented
 
     def _get_value_opc_attr(self, attr_name, prec_decimals=2):
         """Return sensor attribute with precission, or None if not present."""
@@ -80,7 +87,7 @@ class I2cBaseClass(object):
             value = getattr(self, attr_name)
             if value is not None:
                 return round(value, prec_decimals)
-        except NotImplemented:
+        except I2cVariableNotImplemented:
             pass
         return None
 
