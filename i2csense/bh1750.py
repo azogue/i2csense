@@ -16,19 +16,18 @@ ONE_TIME_HIGH_RES_MODE_1 = "one_time_high_res_mode_1"
 ONE_TIME_HIGH_RES_MODE_2 = "one_time_high_res_mode_2"
 ONE_TIME_LOW_RES_MODE = "one_time_low_res_mode"
 OPERATION_MODES = {
-    CONTINUOUS_LOW_RES_MODE: (0x13, True),  # 4lx resolution
-    CONTINUOUS_HIGH_RES_MODE_1: (0x10, True),  # 0.5lx resolution.
-    CONTINUOUS_HIGH_RES_MODE_2: (0X11, True),  # 1lx resolution.
-    ONE_TIME_HIGH_RES_MODE_1: (0x20, False),  # 0.5lx resolution.
-    ONE_TIME_HIGH_RES_MODE_2: (0x21, False),  # 0.5lx resolution.
-    ONE_TIME_LOW_RES_MODE: (0x23, False),  # 4lx resolution.
+    CONTINUOUS_LOW_RES_MODE: (0x13, True),      # 4lx resolution
+    CONTINUOUS_HIGH_RES_MODE_1: (0x10, True),   # 1lx resolution.
+    CONTINUOUS_HIGH_RES_MODE_2: (0X11, True),   # 0.5lx resolution.
+    ONE_TIME_LOW_RES_MODE: (0x23, False),       # 4lx resolution.
+    ONE_TIME_HIGH_RES_MODE_1: (0x20, False),    # 1lx resolution.
+    ONE_TIME_HIGH_RES_MODE_2: (0x21, False),    # 0.5lx resolution.
 }
 
-# SENSOR_UNIT = 'lx'
 DEFAULT_I2C_ADDRESS = '0x23'
 DEFAULT_MODE = CONTINUOUS_HIGH_RES_MODE_1
 DEFAULT_DELAY_MS = 120
-DEFAULT_SENSITIVITY = 69  # from 31 to 254
+DEFAULT_SENSITIVITY = 69                        # sensitivity from 31 to 254
 
 # Define some constants from the datasheet
 POWER_DOWN = 0x00  # No active state
@@ -51,12 +50,14 @@ class BH1750(I2cBaseClass):
         self._delay = measurement_delay / 1000.
         self._operation_mode = OPERATION_MODES[operation_mode][0]
         self._continuous_sampling = OPERATION_MODES[operation_mode][1]
+        self._high_res = (self._operation_mode & 0x03) == 0x01
+        self._low_res = (self._operation_mode & 0x03) == 0x03
         self._mtreg = None
+
         self._power_down()
         self.set_sensitivity(sensitivity)
 
         self._light_level = -1
-
         self.update()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -121,13 +122,13 @@ class BH1750(I2cBaseClass):
             return -1
 
         count = data >> 8 | (data & 0xff) << 8
-        mode2coeff = 2 if (self._mode & 0x03) == 0x01 else 1
+        mode2coeff = 2 if self._high_res else 1
         ratio = 1 / (1.2 * (self._mtreg / 69.0) * mode2coeff)
         return ratio * count
 
     def _wait_for_result(self):
         """Wait for the sensor to be ready for measurement."""
-        basetime = 0.018 if (self._mode & 0x03) == 0x03 else 0.128
+        basetime = 0.018 if self._low_res else 0.128
         sleep(basetime * (self._mtreg / 69.0) + self._delay)
 
     def update(self):
@@ -139,8 +140,10 @@ class BH1750(I2cBaseClass):
             self._set_mode(self._operation_mode)
             self._wait_for_result()
         self._light_level = self._get_result()
+        if not self._continuous_sampling:
+            self._power_down()
 
     @property
     def light_level(self):
         """Return light level in lux."""
-        return self._light_level
+        return round(self._light_level, 1 if self._high_res else 0)

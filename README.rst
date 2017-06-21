@@ -1,18 +1,10 @@
-# -*- coding: utf-8 -*-
-i2csense
-========
-
 Another library to handle sensors connected via
-**`I2c <https://en.wikipedia.org/wiki/I²C>`__ bus** (SDA, SCL pins) to
-your **`Raspberry Pi <https://www.raspberrypi.org/>`__**.
+**I2c bus** (SDA, SCL pins) to the **Raspberry Pi**.
 
-This library implements the following i2c sensors: - **`Bosch BME280
-Environmental sensor (temperature, humidity and
-pressure) <https://cdn-shop.adafruit.com/datasheets/BST-BME280_DS001-10.pdf>`__**
-- **`HTU21D temperature and humidity
-sensor <http://www.datasheetspdf.com/PDF/HTU21D/779951/1>`__** -
-**`BH1750FVI light level
-sensor <http://cpre.kmutnb.ac.th/esl/learning/bh1750-light-sensor/bh1750fvi-e_datasheet.pdf>`__**
+This library implements the following i2c sensors:
+- **`Bosch BME280 Environmental sensor (temperature, humidity and pressure) <https://cdn-shop.adafruit.com/datasheets/BST-BME280_DS001-10.pdf>`_**
+- **`HTU21D temperature and humidity sensor <http://www.datasheetspdf.com/PDF/HTU21D/779951/1>`_**
+- **`BH1750FVI light level sensor <http://cpre.kmutnb.ac.th/esl/learning/bh1750-light-sensor/bh1750fvi-e_datasheet.pdf>`_**
 
 Installation
 ------------
@@ -128,6 +120,7 @@ Changelog
 
 -  **v0.0.1**: First release with 3 sensors: **BME280, BH1750, HTU21D**.
 -  **v0.0.2**: Minor fixes.
+-  **v0.0.3**: Minor fixes for `BH1750`, fix `README.rst`.
 
 TODO:
 -----
