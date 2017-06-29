@@ -41,10 +41,7 @@ class HTU21D(I2cBaseClass):
             sleep(MEASUREMENT_WAIT_TIME)
             return True
         except OSError as exc:
-            if self._logger is not None:
-                self._logger.error("Bad writing in bus: %s", exc)
-            else:
-                print("Bad writing in bus: %s", exc)
+            self.log_error("Bad writing in bus: %s", exc)
             return False
 
     @staticmethod
@@ -89,6 +86,9 @@ class HTU21D(I2cBaseClass):
 
     def update(self):
         """Read raw data and calculate temperature and humidity."""
+        if not self._ok:
+            self.log_error("Trying to restore OK mode w/ soft reset")
+            self._ok = self._soft_reset()
         try:
             self._bus.write_byte(self._i2c_add, CMD_READ_TEMP_NOHOLD)
             sleep(MEASUREMENT_WAIT_TIME)
@@ -101,10 +101,7 @@ class HTU21D(I2cBaseClass):
                 self._i2c_add, CMD_READ_HUM_HOLD, 3)
         except OSError as exc:
             self._ok = False
-            if self._logger is not None:
-                self._logger.error("Bad reading: %s", exc)
-            else:
-                print("Bad reading: %s", exc)
+            self.log_error("Bad reading: %s", exc)
             return
 
         if self._crc8check(buf_t):
@@ -122,13 +119,11 @@ class HTU21D(I2cBaseClass):
             else:
                 self._humidity = -255
                 self._ok = False
+                self.log_error("Bad CRC error with humidity")
         else:
             self._temperature = -255
             self._ok = False
-            if self._logger is not None:
-                self._logger.error("Bad CRC error")
-            else:
-                print("Bad CRC error")
+            self.log_error("Bad CRC error with temperature")
 
     @property
     def temperature(self):

@@ -24,7 +24,7 @@ intervals.
 from math import log10
 
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 DEFAULT_I2C_BUS = 1
 DEFAULT_DELAY_SEC = 5
@@ -51,6 +51,13 @@ class I2cBaseClass(object):
         """String representation of the i2c sensor"""
         return "<I2c sensor at %s. Current state: %s>" % (
             hex(self._i2c_add), self.current_state_str)
+
+    def log_error(self, msg, *args):
+        """Log an error or print in stdout if no logger."""
+        if self._logger is not None:
+            self._logger.error(msg, *args)
+        else:
+            print(msg % args)
 
     def update(self):
         """Read sensor data and update state and variables."""

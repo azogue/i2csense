@@ -154,10 +154,7 @@ class BME280(I2cBaseClass):
             for i in range(0xE1, 0xE1 + 7):
                 raw_data.append(self._bus.read_byte_data(self._i2c_add, i))
         except OSError as exc:
-            if self._logger is not None:
-                self._logger.error("Can't populate calibration data: %s", exc)
-            else:
-                print("Can't populate calibration data: %s", exc)
+            self.log_error("Can't populate calibration data: %s", exc)
             return
 
         calibration_t.append((raw_data[1] << 8) | raw_data[0])
@@ -233,10 +230,7 @@ class BME280(I2cBaseClass):
             for i in range(0xF7, 0xF7 + 8):
                 data.append(self._bus.read_byte_data(self._i2c_add, i))
         except OSError as exc:
-            if self._logger is not None:
-                self._logger.warning("Bad update: %s", exc)
-            else:
-                print("Bad update: %s", exc)
+            self.log_error("Bad update: %s", exc)
             self._ok = False
             return
 

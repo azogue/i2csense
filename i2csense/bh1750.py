@@ -70,10 +70,7 @@ class BH1750(I2cBaseClass):
             self._bus.write_byte(self._i2c_add, self._mode)
             self._ok = True
         except OSError as exc:
-            if self._logger is not None:
-                self._logger.error("Bad writing in bus: %s", exc)
-            else:
-                print("Bad writing in bus: %s", exc)
+            self.log_error("Bad writing in bus: %s", exc)
             self._ok = False
 
     def _power_down(self):
@@ -114,10 +111,7 @@ class BH1750(I2cBaseClass):
             data = self._bus.read_word_data(self._i2c_add, self._mode)
             self._ok = True
         except OSError as exc:
-            if self._logger is not None:
-                self._logger.error("Bad reading in bus: %s", exc)
-            else:
-                print("Bad reading in bus: %s", exc)
+            self.log_error("Bad reading in bus: %s", exc)
             self._ok = False
             return -1
 
